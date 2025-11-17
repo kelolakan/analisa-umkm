@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <title>Template Analisa Bisnis Kilat</title>
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat Chart.js untuk visualisasi -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Menggunakan font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Latar belakang abu-abu sangat muda */
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 250px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            font-weight: 400;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        /* Kustomisasi warna tema */
+        :root {
+            --color-primary: #003366; /* Deep Blue */
+            --color-secondary: #00A79D; /* Teal */
+        }
+        .bg-primary { background-color: var(--color-primary); }
+        .text-primary { color: var(--color-primary); }
+        .bg-secondary { background-color: var(--color-secondary); }
+        .text-secondary { color: var(--color-secondary); }
+        .border-primary { border-color: var(--color-primary); }
+        input[type="number"]:focus {
+            box-shadow: 0 0 0 3px rgba(0, 167, 157, 0.3);
+            border-color: var(--color-secondary);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- HEADER -->
+        <header class="text-center mb-8 p-6 bg-white rounded-lg shadow-md">
+            <h1 class="text-3xl font-bold text-primary">Template Analisa Bisnis Kilat</h1>
+            <p class="text-lg text-gray-600 mt-1">Transformasi Lulusan Akuntansi SMK Menjadi Financial Strategist</p>
+            <p class="text-sm text-gray-500 mt-2">Dibawakan oleh: Muchammad Djaenuddin</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <!-- KOLOM 1: INPUT DATA MENTAH -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold text-primary mb-6 border-b-2 border-primary pb-2">
+                    <span class="text-2xl mr-2">1</span> Data Mentah UMKM (Per Bulan)
+                </h2>
+                <p class="text-gray-600 mb-6 text-sm">Masukkan data hasil observasi lapangan Anda [cite: user] ke kolom di bawah ini.</p>
+                
+                <form id="analysis-form" class="space-y-6">
+                    <div>
+                        <label for="nama-umkm" class="block text-sm font-medium text-gray-700">Nama UMKM</label>
+                        <input type="text" id="nama-umkm" placeholder="Contoh: Warung Kopi 'Maju Jaya'" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-secondary focus:border-secondary">
+                    </div>
+
+                    <!-- Data Omset (dari temuan) -->
+                    <div>
+                        <label for="omset" class="block text-sm font-medium text-gray-700">A. Omset / Penjualan Rata-rata</label>
+                        <input type="number" id="omset" placeholder="Contoh: 10000000" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+
+                    <!-- Data Gambaran Bisnis (dipecah) -->
+                    <div>
+                        <label for="variabel" class="block text-sm font-medium text-gray-700">
+                            B. Total Biaya Variabel 
+                            <span class="tooltip text-secondary font-bold">[i]
+                                <span class="tooltiptext">Biaya yang berubah-ubah sesuai penjualan. Contoh: Bahan baku, kemasan, komisi penjualan.</span>
+                            </span>
+                        </label>
+                        <input type="number" id="variabel" placeholder="Contoh: 4000000" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+
+                    <div>
+                        <label for="tetap" class="block text-sm font-medium text-gray-700">
+                            C. Total Biaya Tetap 
+                            <span class="tooltip text-secondary font-bold">[i]
+                                <span class="tooltiptext">Biaya yang pasti keluar, tidak peduli laku atau tidak. Contoh: Gaji, sewa tempat, listrik, internet.</span>
+                            </span>
+                        </label>
+                        <input type="number" id="tetap" placeholder="Contoh: 2000000" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+
+                    <!-- Data Aset (diterjemahkan jadi 'The Ask') -->
+                    <div class="pt-4 border-t border-gray-200">
+                        <h3 class="text-lg font-medium text-primary">Proyeksi & "The Ask" [cite: user]</h3>
+                        <p class="text-sm text-gray-500 mb-3">Dari data aset [cite: user] & gambaran bisnis [cite: user], masukkan kebutuhan investasi.</p>
+                        
+                        <label for="investasi" class="block text-sm font-medium text-gray-700">D. Kebutuhan Investasi (The Ask)</label>
+                        <input type="number" id="investasi" placeholder="Contoh: 5000000 (untuk beli mesin kopi baru)" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                        
+                        <label for="kenaikan" class="block text-sm font-medium text-gray-700 mt-4">E. Prediksi Kenaikan Omset (jika investasi disetujui)</label>
+                        <input type="number" id="kenaikan" placeholder="Contoh: 20 (untuk 20%)" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                    </div>
+
+                    <button type="button" id="calculate-btn" class="w-full bg-secondary text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:bg-opacity-90 transition-all text-lg">
+                        Hitung & Buat Analisa!
+                    </button>
+                </form>
+            </div>
+
+            <!-- KOLOM 2: OUTPUT INSIGHT (UNTUK PITCH DECK) -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold text-primary mb-6 border-b-2 border-primary pb-2">
+                    <span class="text-2xl mr-2">2</span> Hasil Analisa (Insight)
+                </h2>
+                <p class="text-gray-600 mb-6 text-sm">Data ini siap Anda masukkan ke **Slide Presentasi Investor** [cite: user]!</p>
+                
+                <div id="results" class="space-y-6">
+                    
+                    <!-- Card 1: Analisis BEP (Untuk Slide 2) -->
+                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                        <h3 class="text-lg font-semibold text-primary mb-3">Analisis Saat Ini (Slide 2: Traksi)</h3>
+                        <div class="space-y-2 text-base">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Laba / Rugi Bersih:</span>
+                                <span id="laba-sekarang-result" class="font-bold text-gray-900">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Titik Impas (BEP) Rupiah:</span>
+                                <span id="bep-result" class="font-bold text-gray-900">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Status Bisnis:</span>
+                                <span id="status-result" class="font-bold px-2 py-0.5 rounded-full text-xs">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Proyeksi (Untuk Slide 3) -->
+                    <div class="bg-secondary bg-opacity-10 p-5 rounded-lg border border-secondary">
+                        <h3 class="text-lg font-semibold text-secondary mb-3">Proyeksi Setelah Investasi (Slide 3: The Ask)</h3>
+                        <div class="space-y-2 text-base">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Target Omset Baru:</span>
+                                <span id="omset-baru-result" class="font-bold text-gray-900">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Proyeksi Laba Bersih Baru:</span>
+                                <span id="laba-baru-result" class="font-bold text-gray-900">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-primary font-semibold">"Return on Investment":</span>
+                                <span id="roi-result" class="font-bold text-primary text-lg">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 3: Visual (Untuk Slide 2/3) -->
+                    <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+                        <h3 class="text-lg font-semibold text-primary mb-3">Visualisasi Data (Untuk Slide 2/3)</h3>
+                        <canvas id="analysisChart" width="400" height="250"></canvas>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Inisialisasi Chart
+        const ctx = document.getElementById('analysisChart').getContext('2d');
+        let analysisChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Saat Ini', 'Proyeksi'],
+                datasets: [
+                    {
+                        label: 'Omset',
+                        data: [0, 0],
+                        backgroundColor: 'rgba(0, 51, 102, 0.7)', // Primary
+                        borderColor: 'rgba(0, 51, 102, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Laba Bersih',
+                        data: [0, 0],
+                        backgroundColor: 'rgba(0, 167, 157, 0.7)', // Secondary
+                        borderColor: 'rgba(0, 167, 157, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) { return formatRupiah(value, true); }
+                        }
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += formatRupiah(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Fungsi Format Rupiah
+        function formatRupiah(angka, compact = false) {
+            if (isNaN(angka) || angka === null) return "-";
+            
+            if (compact) {
+                if (angka >= 1_000_000_000) {
+                    return (angka / 1_000_000_000).toFixed(1).replace('.', ',') + ' M';
+                }
+                if (angka >= 1_000_000) {
+                    return (angka / 1_000_000).toFixed(1).replace('.', ',') + ' Jt';
+                }
+                if (angka >= 1_000) {
+                    return (angka / 1_000).toFixed(1).replace('.', ',') + ' Rb';
+                }
+            }
+            
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(angka);
+        }
+
+        // Fungsi Kalkulasi
+        function calculate() {
+            // Ambil data input
+            const omset = parseFloat(document.getElementById('omset').value) || 0;
+            const variabel = parseFloat(document.getElementById('variabel').value) || 0;
+            const tetap = parseFloat(document.getElementById('tetap').value) || 0;
+            const investasi = parseFloat(document.getElementById('investasi').value) || 0;
+            const kenaikan = parseFloat(document.getElementById('kenaikan').value) || 0;
+
+            // 1. Analisis SAAT INI
+            const labaSaatIni = omset - variabel - tetap;
+            const marginKontribusi = omset - variabel;
+            const marginKontribusiRatio = (marginKontribusi / omset) || 0;
+            const bepRupiah = (marginKontribusiRatio > 0) ? (tetap / marginKontribusiRatio) : 0;
+
+            // Tampilkan hasil SAAT INI
+            document.getElementById('laba-sekarang-result').innerText = formatRupiah(labaSaatIni);
+            document.getElementById('bep-result').innerText = formatRupiah(bepRupiah);
+            
+            const statusEl = document.getElementById('status-result');
+            if (labaSaatIni > 0) {
+                statusEl.innerText = 'UNTUNG';
+                statusEl.className = 'font-bold px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-800';
+            } else if (labaSaatIni < 0) {
+                statusEl.innerText = 'RUGI';
+                statusEl.className = 'font-bold px-2 py-0.5 rounded-full text-xs bg-red-100 text-red-800';
+            } else {
+                statusEl.innerText = 'IMPAS';
+                statusEl.className = 'font-bold px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-800';
+            }
+
+            // 2. Analisis PROYEKSI
+            const omsetBaru = omset * (1 + (kenaikan / 100));
+            // Asumsi biaya variabel naik sejalan dengan omset
+            const variabelBaru = variabel * (1 + (kenaikan / 100)); 
+            const labaBaru = omsetBaru - variabelBaru - tetap;
+            const kenaikanLaba = labaBaru - labaSaatIni;
+            // ROI Sederhana = Kenaikan Laba / Investasi
+            const roi = (investasi > 0) ? ((kenaikanLaba / investasi) * 100) : 0; 
+
+            // Tampilkan hasil PROYEKSI
+            document.getElementById('omset-baru-result').innerText = formatRupiah(omsetBaru);
+            document.getElementById('laba-baru-result').innerText = formatRupiah(labaBaru);
+            
+            const roiEl = document.getElementById('roi-result');
+            if (investasi > 0) {
+                roiEl.innerText = `${roi.toFixed(1)}%`;
+                if(roi > 0) {
+                    roiEl.className = 'font-bold text-green-700 text-lg';
+                } else {
+                    roiEl.className = 'font-bold text-red-700 text-lg';
+                }
+            } else {
+                roiEl.innerText = '-';
+                roiEl.className = 'font-bold text-primary text-lg';
+            }
+
+
+            // 3. Update Chart
+            analysisChart.data.datasets[0].data = [omset, omsetBaru];
+            analysisChart.data.datasets[1].data = [labaSaatIni, labaBaru];
+            analysisChart.update();
+        }
+
+        // Tambah event listener ke tombol
+        document.getElementById('calculate-btn').addEventListener('click', calculate);
+        
+        // Opsional: Hitung otomatis saat mengetik
+        const inputs = document.querySelectorAll('#analysis-form input');
+        inputs.forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+
+    </script>
+</body>
+</html>
